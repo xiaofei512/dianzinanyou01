@@ -89,7 +89,7 @@ export default function LoginPage() {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="请输入用户名"
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
               disabled={isLoading}
             />
           </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="请输入密码"
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition pr-12"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition pr-12"
                 disabled={isLoading}
               />
               <button
@@ -126,7 +126,7 @@ export default function LoginPage() {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-purple-500 focus:ring-purple-500"
+                className="w-4 h-4 rounded border-gray-300 text-pink-500 focus:ring-pink-500"
                 disabled={isLoading}
               />
               <span className="text-sm text-gray-600">记住我（30天内免登录）</span>
@@ -137,7 +137,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full py-3 bg-pink-500 hover:bg-pink-600 text-white font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isLoading ? (
               <>
@@ -152,7 +152,7 @@ export default function LoginPage() {
           {/* 注册链接 */}
           <p className="mt-6 text-center text-sm text-gray-500">
             还没有账号？{' '}
-            <Link href="/register" className="text-purple-500 hover:text-purple-600 font-medium">
+            <Link href="/register" className="text-pink-500 hover:text-pink-600 font-medium">
               立即注册
             </Link>
           </p>

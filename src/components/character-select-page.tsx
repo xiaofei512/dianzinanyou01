@@ -1,9 +1,11 @@
 'use client';
 
+import { useRef } from 'react';
 import { Character, CharacterId } from '@/types/character';
 import { CHARACTERS } from '@/data/characters';
 import { cn } from '@/lib/utils';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
+import { TimelineContent } from '@/components/ui/timeline-animation';
 import {
   motion,
   useMotionValue,
@@ -17,26 +19,46 @@ interface CharacterSelectPageProps {
 }
 
 export function CharacterSelectPage({ onSelectCharacter }: Readonly<CharacterSelectPageProps>) {
+  const pageRef = useRef<HTMLDivElement>(null);
+
   return (
-    <div className="min-h-screen bg-[#FAF7F2] flex flex-col">
+    <div ref={pageRef} className="min-h-screen bg-[#FAF7F2] flex flex-col">
       {/* 头部 */}
       <header className="pt-12 pb-8 text-center">
-        <h1 className="text-3xl font-medium text-[#1A1612] tracking-wider" style={{ fontFamily: 'Noto Serif SC, serif' }}>
+        <TimelineContent
+          as="h1"
+          animationNum={0}
+          timelineRef={pageRef}
+          className="text-3xl font-medium text-[#1A1612] tracking-wider"
+          style={{ fontFamily: 'Noto Serif SC, serif' }}
+        >
           予你
-        </h1>
-        <p className="text-sm text-[#7A6E64] mt-2">选择一位开始对话</p>
+        </TimelineContent>
+        <TimelineContent
+          as="p"
+          animationNum={1}
+          timelineRef={pageRef}
+          className="text-sm text-[#7A6E64] mt-2"
+        >
+          选择一位开始对话
+        </TimelineContent>
       </header>
 
       {/* 角色卡片网格 */}
       <div className="flex-1 px-6 pb-8">
         <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
           {CHARACTERS.map((character, index) => (
-            <CharacterCard
+            <TimelineContent
               key={character.id}
-              character={character}
-              index={index}
-              onClick={() => onSelectCharacter(character.id)}
-            />
+              animationNum={index + 2}
+              timelineRef={pageRef}
+            >
+              <CharacterCard
+                character={character}
+                index={index}
+                onClick={() => onSelectCharacter(character.id)}
+              />
+            </TimelineContent>
           ))}
         </div>
       </div>
@@ -50,7 +72,7 @@ interface CharacterCardProps {
   onClick: () => void;
 }
 
-function CharacterCard({ character, index, onClick }: Readonly<CharacterCardProps>) {
+function CharacterCard({ character, onClick }: Readonly<CharacterCardProps>) {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
   const shouldReduceMotion = useReducedMotion();
@@ -87,15 +109,12 @@ function CharacterCard({ character, index, onClick }: Readonly<CharacterCardProp
           rotateX,
           rotateY,
           transformStyle: 'preserve-3d',
-          animationDelay: `${index * 50}ms`,
-          animationFillMode: 'both',
         }}
         className={cn(
           'relative bg-white rounded-[20px] p-4 text-left w-full',
           'border border-[#EDE5D8] hover:border-[#C9A96E]',
           'transition-[border-color,box-shadow] duration-200 ease-out',
           'hover:shadow-lg hover:shadow-[#C9A96E]/10',
-          'animate-fade-in-up'
         )}
       >
         <GlowingEffect

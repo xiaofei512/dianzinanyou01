@@ -1,7 +1,6 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Stage } from '@/types/character';
 
 interface UnlockModalProps {
@@ -16,68 +15,54 @@ export function UnlockModal({ isOpen, stage, unlockMessage, onClose }: UnlockMod
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-      {/* 背景遮罩 */}
       <div
-        className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/45 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* 弹窗内容 */}
       <div
-        className="relative bg-white rounded-[24px] p-6 max-w-sm w-full animate-scale-in"
-        style={{
-          boxShadow: `0 20px 60px -10px ${stage.themeColor}40`,
-        }}
+        className="bg-card border-border/80 animate-scale-in relative w-full max-w-sm rounded-2xl border p-6 shadow-2xl"
+        style={{ boxShadow: `0 24px 70px -12px ${stage.themeColor}55` }}
       >
-        {/* 关闭按钮 */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-1 text-[#B0A89E] hover:text-[#1A1612] transition-colors"
+          className="text-foreground/45 hover:text-foreground absolute top-3 right-3 p-1 transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="h-5 w-5" />
         </button>
 
-        {/* 阶段图标 */}
-        <div className="text-center mb-4">
+        <div className="mb-4 text-center">
           <div
-            className="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-3xl"
-            style={{ backgroundColor: `${stage.themeColor}15` }}
+            className="mx-auto flex h-16 w-16 items-center justify-center rounded-full text-3xl"
+            style={{ backgroundColor: `${stage.themeColor}22` }}
           >
             {stage.icon}
           </div>
         </div>
 
-        {/* 阶段标题 */}
         <h3
-          className="text-center text-xl font-medium mb-2"
-          style={{ color: stage.themeColor, fontFamily: 'Noto Serif SC, serif' }}
+          className="mb-2 text-center text-xl font-semibold"
+          style={{ color: stage.themeColor }}
         >
           {stage.icon} {stage.name}
         </h3>
 
-        {/* 解锁信息 */}
-        <p className="text-center text-sm text-[#7A6E64] mb-4">
-          恭喜！你们的关系更进一步了
+        <p className="text-foreground/65 mb-4 text-center text-sm">
+          关系阶段已提升，新的互动内容已解锁
         </p>
 
-        {/* 解锁台词 */}
         <div
-          className="rounded-[16px] p-4 text-center"
-          style={{ backgroundColor: `${stage.themeColor}08` }}
+          className="rounded-xl p-4 text-center"
+          style={{ backgroundColor: `${stage.themeColor}14` }}
         >
-          <p
-            className="text-sm leading-relaxed italic"
-            style={{ color: stage.themeColor }}
-          >
-            "{unlockMessage}"
+          <p className="text-sm leading-relaxed italic" style={{ color: stage.themeColor }}>
+            “{unlockMessage}”
           </p>
         </div>
 
-        {/* 确认按钮 */}
         <button
           onClick={onClose}
-          className="w-full mt-5 py-3 rounded-[22px] text-white text-sm font-medium transition-all hover:opacity-90"
-          style={{ backgroundColor: stage.themeColor }}
+          className="mt-5 w-full rounded-full bg-black py-2.5 text-sm font-medium text-white transition hover:bg-black/85"
         >
           继续聊天
         </button>

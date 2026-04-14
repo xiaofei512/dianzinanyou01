@@ -1,6 +1,22 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Noto_Serif_SC } from 'next/font/google';
 import './globals.css';
 import { ClientProviders } from '@/components/client-providers';
+import { SiteNavbar } from '@/components/site/site-navbar';
+import { SiteFooter } from '@/components/site/site-footer';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const notoSerif = Noto_Serif_SC({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: {
@@ -34,16 +50,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-CN">
-      <head>
-        {/* 引入 Noto Serif SC 中文字体 */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className={`antialiased bg-[#FAF7F2]`}>
-        <ClientProviders>{children}</ClientProviders>
+    <html lang="zh-CN" className={`${inter.variable} ${notoSerif.variable}`}>
+      <body className="bg-theme-bg font-sans antialiased">
+        <ClientProviders>
+          <SiteNavbar />
+          <main>{children}</main>
+          <SiteFooter />
+        </ClientProviders>
       </body>
     </html>
   );

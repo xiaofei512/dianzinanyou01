@@ -6,6 +6,9 @@ import { CHARACTERS } from '@/data/characters';
 import { cn } from '@/lib/utils';
 import { GlowingEffect } from '@/components/ui/glowing-effect';
 import { TimelineContent } from '@/components/ui/timeline-animation';
+import { DottedSeparator } from '@/components/site/dotted-separator';
+import { SectionHeading } from '@/components/site/section-heading';
+import { SiteContainer } from '@/components/site/container';
 import {
   motion,
   useMotionValue,
@@ -22,31 +25,31 @@ export function CharacterSelectPage({ onSelectCharacter }: Readonly<CharacterSel
   const pageRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div ref={pageRef} className="min-h-screen bg-[#FAF7F2] flex flex-col">
-      {/* 头部 */}
-      <header className="pt-12 pb-8 text-center">
-        <TimelineContent
-          as="h1"
-          animationNum={0}
-          timelineRef={pageRef}
-          className="text-3xl font-medium text-[#1A1612] tracking-wider"
-          style={{ fontFamily: 'Noto Serif SC, serif' }}
-        >
-          予你
-        </TimelineContent>
-        <TimelineContent
-          as="p"
-          animationNum={1}
-          timelineRef={pageRef}
-          className="text-sm text-[#7A6E64] mt-2"
-        >
-          选择一位开始对话
-        </TimelineContent>
-      </header>
+    <div ref={pageRef} className="min-h-[calc(100dvh-10rem)] py-10 md:py-14">
+      <SiteContainer>
+        <header className="text-left">
+          <SectionHeading>Character Select</SectionHeading>
+          <TimelineContent
+            as="h1"
+            animationNum={0}
+            timelineRef={pageRef}
+            className="mt-4 text-3xl leading-tight font-semibold tracking-tight md:text-4xl"
+          >
+            选择一位，开始今天的对话
+          </TimelineContent>
+          <TimelineContent
+            as="p"
+            animationNum={1}
+            timelineRef={pageRef}
+            className="text-foreground/65 mt-3 max-w-2xl text-sm leading-relaxed md:text-base"
+          >
+            每位角色都有独立人设、语气和关系推进节奏，选择后即可进入沉浸式互动。
+          </TimelineContent>
+        </header>
 
-      {/* 角色卡片网格 */}
-      <div className="flex-1 px-6 pb-8">
-        <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto">
+        <DottedSeparator className="my-8" />
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {CHARACTERS.map((character, index) => (
             <TimelineContent
               key={character.id}
@@ -61,7 +64,7 @@ export function CharacterSelectPage({ onSelectCharacter }: Readonly<CharacterSel
             </TimelineContent>
           ))}
         </div>
-      </div>
+      </SiteContainer>
     </div>
   );
 }
@@ -78,11 +81,11 @@ function CharacterCard({ character, onClick }: Readonly<CharacterCardProps>) {
   const shouldReduceMotion = useReducedMotion();
 
   const rotateX = useSpring(
-    useTransform(mouseY, [-0.5, 0.5], [shouldReduceMotion ? 0 : 6, shouldReduceMotion ? 0 : -6]),
+    useTransform(mouseY, [-0.5, 0.5], [shouldReduceMotion ? 0 : 5, shouldReduceMotion ? 0 : -5]),
     { stiffness: 300, damping: 30 }
   );
   const rotateY = useSpring(
-    useTransform(mouseX, [-0.5, 0.5], [shouldReduceMotion ? 0 : -6, shouldReduceMotion ? 0 : 6]),
+    useTransform(mouseX, [-0.5, 0.5], [shouldReduceMotion ? 0 : -5, shouldReduceMotion ? 0 : 5]),
     { stiffness: 300, damping: 30 }
   );
 
@@ -111,70 +114,54 @@ function CharacterCard({ character, onClick }: Readonly<CharacterCardProps>) {
           transformStyle: 'preserve-3d',
         }}
         className={cn(
-          'relative bg-white rounded-[20px] p-4 text-left w-full',
-          'border border-[#EDE5D8] hover:border-[#C9A96E]',
-          'transition-[border-color,box-shadow] duration-200 ease-out',
-          'hover:shadow-lg hover:shadow-[#C9A96E]/10',
+          'border-border/80 bg-card relative w-full rounded-2xl border p-4 text-left',
+          'transition-[border-color,box-shadow,transform] duration-200 ease-out',
+          'hover:border-foreground/35 hover:shadow-xl hover:shadow-black/5',
         )}
       >
         <GlowingEffect
-          spread={40}
-          glow={true}
+          spread={36}
+          glow
           disabled={false}
-          proximity={64}
+          proximity={70}
           inactiveZone={0.01}
-          borderWidth={1.5}
+          borderWidth={1.2}
         />
-        {/* 头像 */}
-        <div className="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden bg-[#F4EFE6]">
-          <img
-            src={character.avatar}
-            alt={character.name}
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${character.id}`;
-            }}
-          />
+
+        <div className="flex items-center gap-3">
+          <div className="bg-secondary size-14 overflow-hidden rounded-full">
+            <img
+              src={character.avatar}
+              alt={character.name}
+              className="h-full w-full object-cover"
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${character.id}`;
+              }}
+            />
+          </div>
+
+          <div>
+            <h3 className="text-foreground text-base font-semibold tracking-tight">
+              {character.name}
+              <span className="text-foreground/55 ml-1 text-xs font-normal">{character.age}岁</span>
+            </h3>
+            <p className="text-foreground/55 mt-1 text-xs">{character.profession}</p>
+          </div>
         </div>
 
-        {/* 角色名和年龄 */}
-        <h3
-          className="text-center text-lg font-medium text-[#1A1612]"
-          style={{ fontFamily: 'Noto Serif SC, serif' }}
-        >
-          {character.name}
-          <span className="text-sm font-normal text-[#7A6E64] ml-1">{character.age}岁</span>
-        </h3>
-
-        {/* 职业 */}
-        <p className="text-center text-xs text-[#7A6E64] mt-1">{character.profession}</p>
-
-        {/* 三个性格标签 */}
-        <div className="flex justify-center gap-1.5 mt-3 flex-wrap">
+        <div className="mt-3 flex flex-wrap gap-1.5">
           {character.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="text-[10px] text-[#7A6E64] bg-[#F4EFE6] px-2 py-0.5 rounded-full"
+              className="bg-secondary text-foreground/65 rounded-full px-2 py-0.5 text-[10px]"
             >
               {tag}
             </span>
           ))}
         </div>
 
-        {/* 代表性话语 */}
-        <p className="text-center text-xs text-[#C9A96E] mt-3 italic line-clamp-2 font-medium">
-          "{character.quote}"
-        </p>
-
-        {/* 背景介绍 */}
-        <p className="text-[10px] text-[#7A6E64] mt-3 line-clamp-2 leading-relaxed">
-          {character.background}
-        </p>
-
-        {/* 与用户的关系 */}
-        <p className="text-[10px] text-[#B0A89E] mt-2 line-clamp-2 leading-relaxed">
-          {character.relationship}
-        </p>
+        <p className="text-foreground mt-3 text-sm leading-relaxed">“{character.quote}”</p>
+        <p className="text-foreground/65 mt-2 line-clamp-2 text-xs leading-relaxed">{character.background}</p>
       </motion.button>
     </div>
   );

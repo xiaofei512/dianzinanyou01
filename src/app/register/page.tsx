@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { useAuth } from '@/contexts/auth-context';
+import { SiteContainer } from '@/components/site/container';
+import { DottedSeparator } from '@/components/site/dotted-separator';
+import { SectionHeading } from '@/components/site/section-heading';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -21,7 +24,6 @@ export default function RegisterPage() {
     e.preventDefault();
     setError('');
 
-    // 前端验证
     if (!username.trim() || !password.trim() || !confirmPassword.trim()) {
       setError('请填写所有字段');
       return;
@@ -61,10 +63,7 @@ export default function RegisterPage() {
         return;
       }
 
-      // 注册成功后自动登录，使用 Auth Context 的 login 方法更新状态
       login(data.token, data.user);
-
-      // 跳转到首页
       router.push('/');
     } catch (err) {
       setError('注册失败，请稍后重试');
@@ -75,116 +74,122 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white px-4">
-      <div className="w-full max-w-md">
-        {/* Logo 和标题 */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">予你</h1>
-          <p className="text-gray-500">AI 陪伴，温暖你的每一天</p>
-        </div>
+    <SiteContainer className="py-10 md:py-14">
+      <div className="mx-auto grid w-full max-w-4xl gap-8 md:grid-cols-[1.05fr_1fr] md:gap-10">
+        <section>
+          <SectionHeading>Create Account</SectionHeading>
+          <h1 className="mt-4 text-3xl leading-tight font-semibold tracking-tight md:text-4xl">
+            创建账号，开始专属关系旅程
+          </h1>
+          <p className="text-foreground/65 mt-4 text-sm leading-relaxed md:text-base">
+            注册后即可进入角色选择，体验文字、语音、图片三种互动模式。
+          </p>
+          <DottedSeparator className="my-6" />
+          <p className="text-foreground/60 text-sm leading-relaxed">
+            建议用户名简洁易记，后续可持续使用同一身份进行长期对话。
+          </p>
+        </section>
 
-        {/* 注册表单 */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">注册</h2>
+        <form
+          onSubmit={handleSubmit}
+          className="bg-card border-border/80 rounded-2xl border p-6 shadow-sm md:p-7"
+        >
+          <h2 className="text-foreground text-lg font-semibold">创建账号</h2>
 
-          {/* 错误提示 */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-100 rounded-lg text-red-600 text-sm">
+            <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
               {error}
             </div>
           )}
 
-          {/* 用户名 */}
-          <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-              用户名
-            </label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="请输入用户名（2-50个字符）"
-              className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition"
-              disabled={isLoading}
-            />
-          </div>
-
-          {/* 密码 */}
-          <div className="mb-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-              密码
-            </label>
-            <div className="relative">
+          <div className="mt-5 space-y-4">
+            <div>
+              <label htmlFor="username" className="text-foreground/75 mb-1.5 block text-sm font-medium">
+                用户名
+              </label>
               <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="请输入密码（至少6个字符）"
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition pr-12"
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="2-50 个字符"
+                className="border-border bg-background focus:border-foreground/35 w-full rounded-md border px-3 py-2.5 text-sm outline-none transition"
                 disabled={isLoading}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
+            </div>
+
+            <div>
+              <label htmlFor="password" className="text-foreground/75 mb-1.5 block text-sm font-medium">
+                密码
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="至少 6 个字符"
+                  className="border-border bg-background focus:border-foreground/35 w-full rounded-md border px-3 py-2.5 pr-10 text-sm outline-none transition"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="text-foreground/45 hover:text-foreground/80 absolute top-1/2 right-2 -translate-y-1/2"
+                >
+                  {showPassword ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="confirmPassword" className="text-foreground/75 mb-1.5 block text-sm font-medium">
+                确认密码
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="再次输入密码"
+                  className="border-border bg-background focus:border-foreground/35 w-full rounded-md border px-3 py-2.5 pr-10 text-sm outline-none transition"
+                  disabled={isLoading}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="text-foreground/45 hover:text-foreground/80 absolute top-1/2 right-2 -translate-y-1/2"
+                >
+                  {showConfirmPassword ? <EyeOff className="size-4.5" /> : <Eye className="size-4.5" />}
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* 确认密码 */}
-          <div className="mb-6">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-              确认密码
-            </label>
-            <div className="relative">
-              <input
-                id="confirmPassword"
-                type={showConfirmPassword ? 'text' : 'password'}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="请再次输入密码"
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition pr-12"
-                disabled={isLoading}
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-              >
-                {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              </button>
-            </div>
-          </div>
-
-          {/* 注册按钮 */}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 bg-pink-500 hover:bg-pink-600 text-white font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-black/85 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="size-4 animate-spin" />
                 注册中...
               </>
             ) : (
-              '注册'
+              '立即注册'
             )}
           </button>
 
-          {/* 登录链接 */}
-          <p className="mt-6 text-center text-sm text-gray-500">
+          <p className="text-foreground/60 mt-5 text-center text-sm">
             已有账号？{' '}
-            <Link href="/login" className="text-pink-500 hover:text-pink-600 font-medium">
-              立即登录
+            <Link href="/login" className="text-foreground hover:text-black underline underline-offset-4">
+              去登录
             </Link>
           </p>
         </form>
       </div>
-    </div>
+    </SiteContainer>
   );
 }

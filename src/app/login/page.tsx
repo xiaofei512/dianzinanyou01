@@ -62,9 +62,11 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-pink-50 to-white px-4">
       <div className="w-full max-w-md">
         {/* Logo 和标题 */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">予你</h1>
-          <p className="text-gray-500">AI 陪伴，温暖你的每一天</p>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 bg-clip-text text-transparent mb-4">
+            予你
+          </h1>
+          <p className="text-gray-500 text-lg">AI 陪伴，温暖你的每一天</p>
         </div>
 
         {/* 登录表单 */}

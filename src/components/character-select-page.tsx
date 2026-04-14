@@ -3,6 +3,7 @@
 import { Character, CharacterId } from '@/types/character';
 import { CHARACTERS } from '@/data/characters';
 import { cn } from '@/lib/utils';
+import { GlowingEffect } from '@/components/ui/glowing-effect';
 
 interface CharacterSelectPageProps {
   onSelectCharacter: (id: CharacterId) => void;
@@ -59,6 +60,14 @@ function CharacterCard({ character, index, onClick }: CharacterCardProps) {
         animationFillMode: 'both',
       }}
     >
+      <GlowingEffect
+        spread={40}
+        glow={true}
+        disabled={false}
+        proximity={64}
+        inactiveZone={0.01}
+        borderWidth={1.5}
+      />
       {/* 头像 */}
       <div className="w-16 h-16 mx-auto mb-3 rounded-full overflow-hidden bg-[#F4EFE6]">
         <img

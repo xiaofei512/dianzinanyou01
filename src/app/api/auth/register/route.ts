@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { getSupabaseClient } from '@/storage/database/supabase-client';
+import { createUser, userExists } from '@/storage/database/neon-client';
 
-// JWT 密钥（生产环境应使用环境变量）
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 interface RegisterRequest {
@@ -16,7 +15,6 @@ export async function POST(request: NextRequest) {
     const body: RegisterRequest = await request.json();
     const { username, password } = body;
 
-    // 参数验证
     if (!username || !password) {
       return NextResponse.json(
         { error: '用户名和密码不能为空' },
@@ -38,45 +36,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 获取数据库客户端
-    const client = getSupabaseClient();
+    const exists = await userExists(username);
 
-    // 检查用户名是否已存在
-    const { data: existingUser, error: queryError } = await client
-      .from('users')
-      .select('id')
-      .eq('username', username)
-      .maybeSingle();
-
-    if (queryError) {
-      throw new Error(`查询失败: ${queryError.message}`);
-    }
-
-    if (existingUser) {
+    if (exists) {
       return NextResponse.json(
         { error: '用户名已存在' },
         { status: 400 }
       );
     }
 
-    // 密码加密
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 创建用户
-    const { data: newUser, error: insertError } = await client
-      .from('users')
-      .insert({
-        username,
-        password: hashedPassword,
-      })
-      .select('id, username, created_at')
-      .single();
+    const newUser = await createUser(username, hashedPassword);
 
-    if (insertError) {
-      throw new Error(`创建用户失败: ${insertError.message}`);
-    }
-
-    // 生成 JWT token（7天有效期）
     const token = jwt.sign(
       { userId: newUser.id, username: newUser.username },
       JWT_SECRET,

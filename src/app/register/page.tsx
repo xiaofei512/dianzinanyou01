@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Turnstile } from '@marsidev/react-turnstile';
 import { useAuth } from '@/contexts/auth-context';
 import { SiteContainer } from '@/components/site/container';
 import { DottedSeparator } from '@/components/site/dotted-separator';
@@ -19,6 +20,8 @@ export default function RegisterPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,6 +47,16 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!turnstileSiteKey) {
+      setError('验证服务未配置，请联系管理员');
+      return;
+    }
+
+    if (!turnstileToken) {
+      setError('请先完成人机验证');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -53,6 +66,7 @@ export default function RegisterPage() {
         body: JSON.stringify({
           username: username.trim(),
           password,
+          turnstileToken,
         }),
       });
 
@@ -167,9 +181,30 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          <div className="mt-5">
+            {turnstileSiteKey ? (
+              <Turnstile
+                siteKey={turnstileSiteKey}
+                onSuccess={(token) => {
+                  setTurnstileToken(token);
+                  setError('');
+                }}
+                onExpire={() => setTurnstileToken('')}
+                onError={() => {
+                  setTurnstileToken('');
+                  setError('验证加载失败，请刷新页面重试');
+                }}
+              />
+            ) : (
+              <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+                未检测到 Turnstile 配置，暂时无法注册。
+              </div>
+            )}
+          </div>
+
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || !turnstileToken || !turnstileSiteKey}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:bg-black/85 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {isLoading ? (

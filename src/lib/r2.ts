@@ -1,12 +1,30 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
+function getRequiredEnv(name: string): string {
+  const value = process.env[name]?.trim()
+  if (!value) {
+    throw new Error(`${name} is not set`)
+  }
+  return value
+}
+
+function joinUrl(baseUrl: string, path: string): string {
+  return `${baseUrl.replace(/\/+$/, '')}/${path.replace(/^\/+/, '')}`
+}
+
+const r2Endpoint = getRequiredEnv('R2_ENDPOINT').replace(/\/+$/, '')
+const r2AccessKeyId = getRequiredEnv('R2_ACCESS_KEY_ID')
+const r2SecretAccessKey = getRequiredEnv('R2_SECRET_ACCESS_KEY')
+
 // 初始化 S3 客户端（指向 R2）
 const s3Client = new S3Client({
   region: 'auto',
-  endpoint: process.env.R2_ENDPOINT,
+  endpoint: r2Endpoint,
+  // R2 常用 path-style，更稳妥地避免虚拟主机风格的 TLS/SNI 兼容问题
+  forcePathStyle: true,
   credentials: {
-    accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+    accessKeyId: r2AccessKeyId,
+    secretAccessKey: r2SecretAccessKey,
   },
 })
 
@@ -16,15 +34,19 @@ export async function uploadToR2(
   fileName: string,
   contentType: string
 ): Promise<string> {
+  const bucketName = getRequiredEnv('R2_BUCKET_NAME')
+  const publicUrl = getRequiredEnv('R2_PUBLIC_URL')
+
   await s3Client.send(
     new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME,
+      Bucket: bucketName,
       Key: fileName,
       Body: fileBuffer,
       ContentType: contentType,
+      ContentLength: fileBuffer.length,
     })
   )
 
   // 返回永久的公开链接
-  return `${process.env.R2_PUBLIC_URL}/${fileName}`
+  return joinUrl(publicUrl, fileName)
 }

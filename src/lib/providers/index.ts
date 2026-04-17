@@ -1,6 +1,6 @@
 import { ChatProvider, ImageProvider, ProviderType } from './types';
 import { OpenRouterChatProvider } from './openrouter-chat';
-import { ArkImageProvider } from './ark-image';
+import { MiniMaxImageProvider } from './minimax-image';
 
 const USE_FALLBACK = process.env.USE_FALLBACK_PROVIDER === 'true';
 
@@ -16,7 +16,7 @@ export function getChatProvider(): ChatProvider {
 
 export function getImageProvider(): ImageProvider {
   if (!imageProviderInstance) {
-    imageProviderInstance = new ArkImageProvider();
+    imageProviderInstance = new MiniMaxImageProvider();
   }
   return imageProviderInstance;
 }

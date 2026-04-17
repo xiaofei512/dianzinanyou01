@@ -210,9 +210,18 @@ export function useChatManager() {
       const prompt = buildImagePrompt(character, scene);
 
       // Step 3: 调用图片生成 API
+      const token = localStorage.getItem('token');
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
       const response = await fetch('/api/image', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           prompt,
           referenceImageUrl: character.referenceImage,

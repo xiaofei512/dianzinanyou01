@@ -41,4 +41,4 @@ export interface ProviderError extends Error {
   provider: string;
 }
 
-export type ProviderType = 'coze' | 'openrouter' | 'ark';
+export type ProviderType = 'coze' | 'openrouter' | 'ark' | 'minimaxi';
